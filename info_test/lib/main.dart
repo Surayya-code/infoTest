@@ -33,6 +33,36 @@ class _SoruSayfasiState extends State<SoruSayfasi> {
   List<Widget> selected = [];
 
   InfoData infoData = InfoData();
+  void buttonFunction(bool answer) {
+    if (infoData.endQuestion()) {
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text("Bravo Testi Bitirdin !"),
+              actions: [
+                TextButton(
+                  child: const Text("Əvvələ qayıt"),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    setState(() {
+                      infoData.testReset();
+                      selected = [];
+                    });
+                  },
+                ),
+              ],
+            );
+          });
+    } else {
+      setState(() {
+        infoData.getQuestionAnswer() == answer
+            ? selected.add(kCorrectIcon)
+            : selected.add(kFalseIcon);
+        infoData.nextQuestion();
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -82,12 +112,7 @@ class _SoruSayfasiState extends State<SoruSayfasi> {
                             size: 30.0,
                           ),
                           onPressed: () {
-                            setState(() {
-                              infoData.getQuestionAnswer() == false
-                                  ? selected.add(kCorrectIcon)
-                                  : selected.add(kFalseIcon);
-                              infoData.nextQuestion();
-                            });
+                            buttonFunction(false);
                           },
                         ))),
                 Expanded(
@@ -103,12 +128,7 @@ class _SoruSayfasiState extends State<SoruSayfasi> {
                           ),
                           child: const Icon(Icons.thumb_up, size: 30.0),
                           onPressed: () {
-                            setState(() {
-                              infoData.getQuestionAnswer() == true
-                                  ? selected.add(kCorrectIcon)
-                                  : selected.add(kFalseIcon);
-                              infoData.nextQuestion();
-                            });
+                            buttonFunction(true);
                           },
                         ))),
               ])),
