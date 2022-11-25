@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:info_test/info_data.dart';
 
 import 'constants/constants.dart';
 
@@ -12,7 +13,7 @@ class BilgiTesti extends StatelessWidget {
     return MaterialApp(
         debugShowCheckedModeBanner: false,
         home: Scaffold(
-            backgroundColor: Colors.indigo[700],
+            backgroundColor: Colors.indigo[900],
             body: SafeArea(
                 child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10.0),
@@ -26,28 +27,28 @@ class SoruSayfasi extends StatefulWidget {
 
   @override
   _SoruSayfasiState createState() => _SoruSayfasiState();
-
-  List<Widget> selected = [
-    
-  ];
 }
 
 class _SoruSayfasiState extends State<SoruSayfasi> {
+  List<Widget> selected = [];
+
+  InfoData infoData = InfoData();
+
   @override
   Widget build(BuildContext context) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
-        const Expanded(
+        Expanded(
           flex: 4,
           child: Padding(
-            padding: EdgeInsets.all(10.0),
+            padding: const EdgeInsets.all(10.0),
             child: Center(
               child: Text(
-                'Bilgi Testi Soruları',
+                infoData.getQuestionText(),
                 textAlign: TextAlign.center,
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 20.0,
                   color: Colors.white,
                 ),
@@ -58,7 +59,7 @@ class _SoruSayfasiState extends State<SoruSayfasi> {
         Wrap(
           spacing: 5,
           runSpacing: 5,
-          children: widget.selected,
+          children: selected,
         ),
         Expanded(
           flex: 1,
@@ -80,9 +81,13 @@ class _SoruSayfasiState extends State<SoruSayfasi> {
                             Icons.thumb_down,
                             size: 30.0,
                           ),
-                          onPressed: () {setState(() {
-                            widget.selected.add(kFalseIcon);
-                          });
+                          onPressed: () {
+                            setState(() {
+                              infoData.getQuestionAnswer() == false
+                                  ? selected.add(kCorrectIcon)
+                                  : selected.add(kFalseIcon);
+                              infoData.nextQuestion();
+                            });
                           },
                         ))),
                 Expanded(
@@ -99,7 +104,10 @@ class _SoruSayfasiState extends State<SoruSayfasi> {
                           child: const Icon(Icons.thumb_up, size: 30.0),
                           onPressed: () {
                             setState(() {
-                              widget.selected.add(kCorrectIcon);
+                              infoData.getQuestionAnswer() == true
+                                  ? selected.add(kCorrectIcon)
+                                  : selected.add(kFalseIcon);
+                              infoData.nextQuestion();
                             });
                           },
                         ))),
@@ -109,5 +117,3 @@ class _SoruSayfasiState extends State<SoruSayfasi> {
     );
   }
 }
-
-
